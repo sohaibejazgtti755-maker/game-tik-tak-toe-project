@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: rgb(212, 225, 229);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .main {
+      background-color: rgb(142, 62, 62);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      width: 400px;
+      height: 700px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: white;
+      font-size: 2.4rem;
+    }
+
+    h2, p {
+      margin: 10px 0;
+      color: white;
+      font-size: 1.4rem;
+    }
+
+    .draws, .current-player {
+      background-color: #eee;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px 0;
+      font-size: 1rem;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 90px);
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .board button {
+      width: 90px;
+      height: 90px;
+      font-size: 2rem;
+      border-radius: 10px;
+      border: 1px solid #151313;
+      cursor: pointer;
+    }
+   
+    .btn {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      font-weight: bold;
+      width: 320px;
+      height: 60px;
+    }
+
+    .btn:hover {
+      background-color: rgb(195, 149, 149);
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <h1>Tic Tac Toe</h1>
+    <h2>Player 1: X</h2>
+    <h2>Player 2: O</h2>
+
+    <div class="current-player" id="statusText">Current Player: X</div>
+    <div class="draws" id="drawText">Draws: 0</div>
+
+    <div class="board" id="gameBoard">
+      <!-- Buttons will be handled by JS -->
+    </div>
+
+    <button class="btn" onclick="restart()">New Game</button>
+  </div>
+
+  <script>
+    const board = document.getElementById("gameBoard");
+    const statusText = document.getElementById("statusText");
+    const drawText = document.getElementById("drawText");
+
+    let turn = "X";
+    let play = true;
+    let grid = Array(9).fill("");
+    let drawCount = 0;
+
+    function setupBoard() {
+      board.innerHTML = "";
+      for (let i = 0; i < 9; i++) {
+        const btn = document.createElement("button");
+        btn.setAttribute("data-id", i);
+        btn.addEventListener("click", handleClick);
+        board.appendChild(btn);
+      }
+      statusText.textContent = "Current Player: ${turn}";
+    }
+
+    function handleClick(e) {
+      const index = e.target.getAttribute("data-id");
+      if (grid[index] !== "" || !play) return;
+
+      grid[index] = turn;
+      e.target.textContent = turn;
+
+      if (checkWin()) {
+        statusText.textContent = `${turn} wins!`;
+        play = false;
+      } else if (!grid.includes("")) {
+        statusText.textContent = "Draw!";
+        drawCount++;
+        drawText.textContent = `Draws: ${drawCount}`;
+        play = false;
+      } else {
+        turn = turn === "X" ? "O" : "X";
+        statusText.textContent = `Current Player: ${turn}`;
+      }
+    }
+
+    function checkWin() {
+      const wins = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+      return wins.some(([a, b, c]) => grid[a] && grid[a] === grid[b] && grid[a] === grid[c]);
+    }
+
+    function restart() {
+      grid = Array(9).fill("");
+      turn = "X";
+      play = true;
+      setupBoard();
+    }
+
+    
+    setupBoard();
+  </script>
+</body>
+</html>
